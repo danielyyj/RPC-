@@ -1,0 +1,48 @@
+syntax="proto3";
+
+// web后台调用推荐系统接口，获取推荐文章id的请求参数
+message UserRequest {
+    string user_id=1; // 用户id， 1代表第一个参数
+    int64 channel_id=2; // 文章的频道id 2代表第二个参数
+    int64 article_num=3; // 返回推荐的文章的数量
+    int64 time_stamp=4; // 推荐时间戳
+
+}
+
+// 自定义的文章埋点数据类型
+message Track {
+
+			string click=1; // 用户点击行为的埋点参数
+			string collect=2; // 用户收藏的埋点参数
+			string share=3; // 用户分享的埋点参数
+			string read=4; // 用户阅读文章详情的埋点参数
+
+}
+
+// 自定义文章数据类型
+message Article {
+
+		int64 article_id=1; // 文章的id
+		Track track=2; // 文章埋点数据
+
+}
+
+// 推荐系统向web后台服务器返回的响应参数的消息协议
+message ArticleResponse {
+
+	 	string exposure=1; // 曝光数据
+		int64 time_stamp=2; // 推荐的文章时间戳
+	    repeated Article recommends=3; // 推荐的文章结果列表
+
+}
+
+
+// 需求：web后端需要调用推荐系统中的方法，获取推荐文章数据
+// 使用：user_recommend(UserRequest()) ====> 返回ArticleResponse  ====> 推荐文章数据
+
+// 定义服务---类似于python中的类
+service UserArticleRecommend {
+    // 定义具体推荐的函数
+    rpc user_recommend(UserRequest) returns (ArticleResponse) {}
+
+}
